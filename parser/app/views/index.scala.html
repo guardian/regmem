@@ -22,7 +22,8 @@
 
             <div class="col-md-5 data">
             @for(info <- mpInfo) {
-                <h2>@info.rawInfo.name</h2>
+                <h2>@info.nameAndConstituency.forename @info.nameAndConstituency.surname</h2>
+                <h3>@info.nameAndConstituency.constituency</h3>
 
                 @for(category <- info.parsedCategories) {
                     <h3>category: @category.id - @category.name</h3>

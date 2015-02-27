@@ -22,7 +22,7 @@ class DataFile
 
   lazy val parsedCategories = rawInfo.categories.map(CategoryParser.apply)
 
-
+  lazy val nameAndConstituency = new NameConstituencyParser(rawInfo.name).NameConstituency.run().get
 
   override def toString: String = file.getAbsolutePath
 }
