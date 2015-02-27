@@ -1,36 +1,30 @@
 package regmem
 
-import scala.xml.XML
-import regmem.model._
+import java.io.File
+
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
+import regmem.model.Categories
+import regmem.raw.RawParser
+
 
 object Main extends App {
    println("hello")
 
-   val elem = XML.loadFile("regmem2015-02-09.xml")
+  val html = Jsoup.parse(new File("abbott_diane.htm"), "UTF-8")
+  //val html = Jsoup.parse(new File("blunkett_david.htm"), "UTF-8")
+//  val html = Jsoup.parse(new File("/Users/gtackley/hack_regmem/mp-interests/mps-140922/yeo_tim.htm"), "UTF-8")
 
-   for (member <- (elem \ "regmem") map (e => new Member(e))) {
-     println(member.name)
+  val mp = RawParser(html)
 
-     for (category <- member.categories) {
-       println("  " + category)
 
-       for (record <- category.records) {
-         println("    RECORD->")
-         println(record)
-         println("    <-RECORD")
-       }
-     }
-   }
+  mp.categories foreach { c =>
+    println(c.id + ": " + Categories.values(c.id))
 
-   //members.foreach(m => println(m))
+    for (item <- c.lineItems) {
+      println("  > " + item)
+    }
+    println()
+  }
 
- //  val categories = members.flatMap(_.categories.map(c => s"""${c.categoryType} -> "${c.name}"""")).distinct.sorted
- //
- //  categories.foreach(println)
-
- //  println((elem \ "regmem" \ "@membername").size)
- //
- //  val childNames = elem.child.map(_.label).distinct
- //
- //  println(childNames)
  }

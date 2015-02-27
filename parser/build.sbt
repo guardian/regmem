@@ -9,5 +9,7 @@ libraryDependencies ++= Seq(
 
   "org.parboiled" %% "parboiled" % "2.0.1",
 
+  "org.jsoup" % "jsoup" % "1.8.1",
+
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
