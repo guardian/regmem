@@ -16,25 +16,11 @@
                 </ol>
             </div>
 
-            <div class="col-md-3 data">
+            <div class="col-md-5 data">
                 @mpInfo.map(m => Html(m.mainText.outerHtml))
             </div>
 
-            <div class="col-md-3 data">
-                @for(info <- mpInfo) {
-                    <h2>@info.rawInfo.name - £@info.rawInfo.totalCash</h2>
-
-                    @for(category <- info.rawInfo.categories) {
-                        <h3>category: @category.id - @category.name £@category.totalCash</h3>
-
-                        @for(lineItem <- category.lineItems) {
-                            <p><strong>@lineItem.indent</strong> <strong>£@lineItem.mostCash</strong> @lineItem.value</p>
-                        }
-                    }
-                }
-            </div>
-
-            <div class="col-md-3 data">
+            <div class="col-md-5 data">
             @for(info <- mpInfo) {
                 <h2>@info.rawInfo.name</h2>
 
