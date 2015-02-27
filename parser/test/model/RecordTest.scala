@@ -1,12 +1,10 @@
-package model.model
+package model
 
 import java.io.File
 
-import model.{RawParser, RawCategory, RawLineItem}
 import org.joda.time.LocalDate
 import org.jsoup.Jsoup
 import org.scalatest._
-import regmem.raw.RawParser
 
 class RecordTest extends FlatSpec with Matchers with OptionValues {
 
