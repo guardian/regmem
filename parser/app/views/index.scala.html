@@ -42,7 +42,7 @@
                     <h3>category: @category.id - @category.name</h3>
 
                     @for(lineItem <- category.lineItems) {
-                        <p>@lineItem</p>
+                        <p>@lineItem.description</p>
                     }
                 }
             }

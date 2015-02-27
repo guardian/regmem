@@ -21,7 +21,7 @@ case class Item
 object CategoryParser{
   def apply(c: RawCategory): Category = {
     c.id match {
-      case 1 | 2 =>
+      case 1 | 2 | 8 =>
         Category(
           c.id,
           parentChildSpacerParser(c.lineItems.toList)
@@ -35,6 +35,9 @@ object CategoryParser{
     }
   }
 
+  val REGISTERED = """\((Registered|Updated) .*\)""".r
+
+  def dropRegistered(s: String) = REGISTERED.replaceAllIn(s, " ").trim
 
   def parentChildSpacerParser(rawItems: List[RawLineItem]): List[Item] = {
     rawItems match {
@@ -44,13 +47,13 @@ object CategoryParser{
         parentChildSpacerParser(rest)
 
       case head :: rest if head.indent == "indent" =>
-        val (children, others) = rest.span(_.indent == "indent2")
+        val (children, others) = rest.span(_.indent != "spacer")
 
         if (children.isEmpty) {
-          Item(description = head.value) :: parentChildSpacerParser(others)
+          Item(description = dropRegistered(head.value)) :: parentChildSpacerParser(others)
         } else {
           val allThese = children.map(c =>
-            Item(description = head.value + " ** " ++ c.value)
+            Item(description = s"${dropRegistered(head.value)} ${dropRegistered(c.value)}")
           )
 
           allThese ::: parentChildSpacerParser(others)
