@@ -18,6 +18,10 @@ class DataFile
 
   lazy val rawInfo = RawParser(doc)
 
+  lazy val parsedCategories = rawInfo.categories.map(CategoryParser.apply)
+
+
+
   override def toString: String = file.getAbsolutePath
 }
 

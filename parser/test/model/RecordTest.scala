@@ -73,17 +73,6 @@ class RecordTest extends FlatSpec with Matchers with OptionValues {
 
   case class ParentItem()
 
-  case class Item
-    (
-    fullText: String,
-    description: String,
-    date: LocalDate,
-    registered: LocalDate,
-    amount: BigDecimal
-  )
 
-  class CategoryParser(c: RawCategory) {
-    lazy val items: Seq[Item] = Nil
-  }
 
 }

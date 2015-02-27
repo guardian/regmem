@@ -16,7 +16,9 @@ case class RawCategory
   (
   id: Int,
   lineItems: Seq[RawLineItem]
-)
+) {
+  def name = Categories.values(id)
+}
 
 case class RawMpInfo
   (
@@ -63,6 +65,8 @@ object RawParser {
             processNextCategory(nextCat)
           }
 
+        case head :: rest if head.text == "Nil." =>
+          processNextCategory(rest)
 
         case other =>
           sys.error("argh! didn't understand " + other)
