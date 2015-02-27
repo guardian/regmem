@@ -1,7 +1,21 @@
-@(list: Seq[model.DataFile], mpInfo: Option[model.DataFile], category: Option[Int])
+@(list: Seq[model.DataFile], mpInfo: Option[model.DataFile], category: Option[Int], showDebugColumn: Boolean)
+@import java.text.NumberFormat
 
-@main("Choose File") {
+@import scala.util.Try
 
+@cssColumnClass = {
+    @if(showDebugColumn) { col-md-3 } else { col-md-5 }
+}
+
+@fmtMaybeCash(bd: Option[BigDecimal]) = {
+    @bd.map(fmtCash)
+}
+
+@fmtCash(bd: BigDecimal) = {
+  £@NumberFormat.getInstance().format(bd.toLong)
+}
+
+@main("Choose MP") {
 
     <div class="container-fluid">
         <div class="row">
@@ -9,18 +23,38 @@
                 <ol class="list-unstyled">
                 @for(f <- list) {
                     <li>
-                        <a href="@routes.Application.showMp(f.niceName, category)">@f.niceName</a>
+                        <a href="@routes.Application.showMp(f.niceName, category)" class="@f.cssClass">
+                            @f.niceName
+                        </a>
+
+                        @f.categoryids
                     </li>
                 }
 
                 </ol>
             </div>
 
-            <div class="col-md-5 data">
+            <div class="@cssColumnClass data">
                 @mpInfo.map(m => Html(m.mainText.outerHtml))
             </div>
 
-            <div class="col-md-5 data">
+            @if(showDebugColumn) {
+                <div class="@cssColumnClass data">
+                @for(info <- mpInfo) {
+                    <h2>@info.rawInfo.name - @fmtCash(info.rawInfo.totalCash)</h2>
+
+                    @for(category <- info.rawInfo.categories) {
+                        <h3>category: @category.id - @category.name @fmtCash(category.totalCash)</h3>
+
+                        @for(lineItem <- category.lineItems) {
+                            <p><strong>@lineItem.indent</strong> <strong>@fmtMaybeCash(lineItem.mostCash)</strong> @lineItem.value</p>
+                        }
+                    }
+                }
+                </div>
+            }
+
+            <div class="@cssColumnClass data">
             @for(info <- mpInfo) {
                 <h2>@info.nameAndConstituency.forename @info.nameAndConstituency.surname</h2>
                 <h3>@info.nameAndConstituency.constituency</h3>
@@ -28,9 +62,16 @@
                 @for(category <- info.parsedCategories) {
                     <h3>category: @category.id - @category.name</h3>
 
-                    @for(lineItem <- category.lineItems) {
-                        <p>@lineItem.description</p>
+                    @if(!category.couldParse) {
+                        <p class="text-danger">There were issues parsing this category</p>
                     }
+
+                    <ul>
+                    @for(lineItem <- category.lineItems) {
+                        <li class="@lineItem.cssClass">
+                            <strong>@fmtMaybeCash(lineItem.amount) </strong>@lineItem.description</li>
+                    }
+                    </ul>
                 }
             }
             </div>

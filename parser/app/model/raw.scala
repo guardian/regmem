@@ -73,6 +73,9 @@ object RawParser {
         case head :: rest if head.text == "Nil." =>
           processNextCategory(rest)
 
+        case head :: rest if head.hasClass("spacer") =>
+          processNextCategory(rest)
+
         case other =>
           sys.error("argh! didn't understand " + other)
       }

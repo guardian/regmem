@@ -14,8 +14,8 @@ object Application extends Controller {
   val node = NodeBuilder.nodeBuilder().clusterName("mps-interests").node()
   val es = node.client()
 
-  def index(category: Option[Int]) = Action {
-    Ok(views.html.index(filteredList(category), None, category))
+  def index(category: Option[Int]) = Action { r =>
+    Ok(views.html.index(filteredList(category), None, category, r.getQueryString("debug").isDefined))
   }
 
   def filteredList(category: Option[Int])= category.map(c =>
@@ -23,8 +23,8 @@ object Application extends Controller {
     )).
     getOrElse(model.DataFile.all)
 
-  def showMp(mpName: String, category: Option[Int]) = Action {
-    Ok(views.html.index(filteredList(category), Some(DataFile.fromNiceName(mpName)), category))
+  def showMp(mpName: String, category: Option[Int]) = Action { r =>
+    Ok(views.html.index(filteredList(category), Some(DataFile.fromNiceName(mpName)), category, r.getQueryString("debug").isDefined))
   }
 
   def search(q: String) = Action {
