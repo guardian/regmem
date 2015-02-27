@@ -5,6 +5,8 @@ import java.nio.file.{FileSystems, Path, Files}
 
 import org.jsoup.Jsoup
 
+import scala.util.Try
+
 
 class DataFile
 (
@@ -34,6 +36,8 @@ object DataFile {
     for (file <- Files.newDirectoryStream(FileSystems.getDefault.getPath(DIR)).toSeq) yield {
       new DataFile(file.toFile)
     }
+
+  lazy val topCapitalists = all.sortBy(d => - Try(d.rawInfo.totalCash).getOrElse(BigDecimal(0)))
 
   def fromNiceName(niceName: String) = {
     val fileName = if (niceName.endsWith(".htm")) niceName else niceName + ".htm"
