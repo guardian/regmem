@@ -1,4 +1,4 @@
-package regmem
+package model
 
 import org.parboiled2._
 import org.parboiled2.CharPredicate._
