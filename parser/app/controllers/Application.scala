@@ -14,7 +14,7 @@ object Application extends Controller {
   def filteredList(category: Option[Int])= category.map(c =>
     model.DataFile.all.filter(d => Try(d.rawInfo.categories.map(_.id).contains(c)).getOrElse(false)
     )).
-    getOrElse(model.DataFile.topCapitalists)
+    getOrElse(model.DataFile.all)
 
   def showMp(mpName: String, category: Option[Int]) = Action {
     Ok(views.html.index(filteredList(category), Some(DataFile.fromNiceName(mpName)), category))
