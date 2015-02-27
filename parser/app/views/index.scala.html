@@ -1,9 +1,40 @@
-@(message: String)
+@(mpInfo: Option[model.DataFile])
 
-@main("Hello") {
+@main("Choose File") {
 
-    <h1>Hello world</h1>
 
-    <p>yo.</p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <ol class="list-unstyled">
+                @for(f <- model.DataFile.all) {
+                    <li>
+                        <a href="@routes.Application.showMp(f.niceName)">@f.niceName</a>
+                    </li>
+                }
+
+                </ol>
+            </div>
+
+            <div class="col-md-5 data">
+                @mpInfo.map(m => Html(m.mainText.outerHtml))
+            </div>
+
+            <div class="col-md-5 data">
+                @for(info <- mpInfo) {
+                    <h2>@info.rawInfo.name</h2>
+
+                    @for(category <- info.rawInfo.categories) {
+                        <h3>category: @category.id</h3>
+
+                        @for(lineItem <- category.lineItems) {
+                            <p>@lineItem</p>
+                        }
+                    }
+                }
+            </div>
+
+        </div>
+    </div>
 
 }
