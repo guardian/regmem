@@ -3,13 +3,20 @@ package controllers
 import model.DataFile
 import play.api.mvc.{Action, Controller}
 
+import scala.util.Try
+
 object Application extends Controller {
 
-  def index() = Action {
-    Ok(views.html.index(None))
+  def index(category: Option[Int]) = Action {
+    Ok(views.html.index(filteredList(category), None, category))
   }
 
-  def showMp(mpName: String) = Action {
-    Ok(views.html.index(Some(DataFile.fromNiceName(mpName))))
+  def filteredList(category: Option[Int])= category.map(c =>
+    model.DataFile.all.filter(d => Try(d.rawInfo.categories.map(_.id).contains(c)).getOrElse(false)
+    )).
+    getOrElse(model.DataFile.topCapitalists)
+
+  def showMp(mpName: String, category: Option[Int]) = Action {
+    Ok(views.html.index(filteredList(category), Some(DataFile.fromNiceName(mpName)), category))
   }
 }

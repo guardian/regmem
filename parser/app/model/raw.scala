@@ -1,5 +1,6 @@
 package model
 
+import model.CashMoneyParser
 import org.jsoup.nodes.{Document, Element}
 
 import scala.util.Try
@@ -9,7 +10,8 @@ import scala.util.Try
 case class RawLineItem
   (
   value: String,
-  indent: String
+  indent: String,
+  mostCash: Option[BigDecimal]
 )
 
 case class RawCategory
@@ -18,13 +20,16 @@ case class RawCategory
   lineItems: Seq[RawLineItem]
 ) {
   def name = Categories.values(id)
+  def totalCash = lineItems.flatMap(_.mostCash).sum
 }
 
 case class RawMpInfo
   (
   name: String,
   categories: Seq[RawCategory]
-)
+)  {
+  def totalCash = categories.map(_.totalCash).sum
+}
 
 object RawParser {
   def apply(html: Document): RawMpInfo = {
@@ -43,7 +48,7 @@ object RawParser {
 
     def extractLineItems(elements: List[Element]): Seq[RawLineItem] = {
       elements map { e =>
-        RawLineItem(e.text, e.className)
+        RawLineItem(e.text, e.className, new CashMoneyParser(e.text).Line.run().get.sorted.lastOption)
       }
     }
 

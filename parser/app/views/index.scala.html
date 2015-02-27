@@ -1,4 +1,4 @@
-@(mpInfo: Option[model.DataFile])
+@(list: Seq[model.DataFile], mpInfo: Option[model.DataFile], category: Option[Int])
 
 @main("Choose File") {
 
@@ -7,9 +7,9 @@
         <div class="row">
             <div class="col-md-2">
                 <ol class="list-unstyled">
-                @for(f <- model.DataFile.all) {
+                @for(f <- list) {
                     <li>
-                        <a href="@routes.Application.showMp(f.niceName)">@f.niceName</a>
+                        <a href="@routes.Application.showMp(f.niceName, category)">@f.niceName</a>
                     </li>
                 }
 
@@ -22,13 +22,13 @@
 
             <div class="col-md-3 data">
                 @for(info <- mpInfo) {
-                    <h2>@info.rawInfo.name</h2>
+                    <h2>@info.rawInfo.name - £@info.rawInfo.totalCash</h2>
 
                     @for(category <- info.rawInfo.categories) {
-                        <h3>category: @category.id - @category.name</h3>
+                        <h3>category: @category.id - @category.name £@category.totalCash</h3>
 
                         @for(lineItem <- category.lineItems) {
-                            <p><strong>@lineItem.indent</strong> @lineItem.value</p>
+                            <p><strong>@lineItem.indent</strong> <strong>£@lineItem.mostCash</strong> @lineItem.value</p>
                         }
                     }
                 }
