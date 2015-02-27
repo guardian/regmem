@@ -1,0 +1,26 @@
+@(results: org.elasticsearch.search.SearchHits)
+
+@main("Search") {
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <p>@results.totalHits() results</p>
+
+
+                @for(r <- results.hits) {
+                    <p>
+                        <strong>@r.field("mp").value[String]</strong>
+                        @r.field("categoryName").value[String]<br>
+                        @r.field("description").value[String]
+                    </p>
+                }
+            </div>
+
+
+        </div>
+    </div>
+
+}
