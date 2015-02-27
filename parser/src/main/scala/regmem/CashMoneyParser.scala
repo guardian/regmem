@@ -8,12 +8,11 @@ class CashMoneyParser(val input: ParserInput) extends Parser {
 
   def NotCash = rule { zeroOrMore(!Cash ~ ANY) }
 
-  def Cash = rule { '£' ~ Pounds ~ optional('.' ~ (Pence)) ~>
-    ((pounds, pence) => pounds * 100 + pence.getOrElse(0L))
+  def Cash = rule { '£' ~ Pounds ~ capture(optional('.' ~ (Pence))) ~>
+    ((pounds, pence) => BigDecimal(pounds.mkString + pence))
   }
 
-  def Pence = rule { capture(2.times(Digit)) ~>
-    (_.mkString.toLong) }
+  def Pence = rule { 2.times(Digit) }
 
-  def Pounds = rule { oneOrMore(capture(Digit) | (',' ~ push("")) ) ~> (_.mkString.toLong)}
+  def Pounds = rule { oneOrMore(capture(oneOrMore(Digit))).separatedBy(',') ~> (_.mkString)}
 }
