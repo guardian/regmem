@@ -1,4 +1,4 @@
-@(mpInfo: Option[model.DataFile])
+@(list: Seq[model.DataFile], mpInfo: Option[model.DataFile], category: Option[Int])
 
 @main("Choose File") {
 
@@ -7,9 +7,9 @@
         <div class="row">
             <div class="col-md-2">
                 <ol class="list-unstyled">
-                @for(f <- model.DataFile.topCapitalists) {
+                @for(f <- list) {
                     <li>
-                        <a href="@routes.Application.showMp(f.niceName)">@f.niceName</a>
+                        <a href="@routes.Application.showMp(f.niceName, category)">@f.niceName</a>
                     </li>
                 }
 
