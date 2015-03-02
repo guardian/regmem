@@ -29,7 +29,7 @@ class DataFile
 
   lazy val nameAndConstituency = new NameConstituencyParser(rawInfo.name).NameConstituency.run().get
 
-  def isValid = Try(parsedCategories).toOption.exists(_.forall(_.couldParse))
+  def isValid = Try(parsedCategories).isSuccess
 
   def cssClass = if (isValid) "" else "text-danger"
 

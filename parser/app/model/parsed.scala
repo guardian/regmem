@@ -6,9 +6,11 @@ case class Category
   (
   id: Int,
   lineItems: Seq[Item],
-  couldParse: Boolean
+  notImplemented: Boolean
 ) {
-  def cssClass = if (couldParse) "text-success" else "text-muted"
+  def cssClass =
+    if (notImplemented) "text-muted"
+    else "text-success"
 
   def name = Categories.values(id)
 }
@@ -18,10 +20,9 @@ case class Item
   description: String,
   date: Option[LocalDate] = None,
   registered: Option[LocalDate] = None,
-  amount: Option[BigDecimal] = None,
-  couldParse: Boolean
+  amount: Option[BigDecimal] = None
 ) {
-  def cssClass = if (couldParse) "" else "text-danger"
+  def cssClass = ""
 }
 
 object CategoryParser{
@@ -32,14 +33,14 @@ object CategoryParser{
         Category(
           c.id,
           items,
-          couldParse = items.forall(_.couldParse)
+          notImplemented = false
         )
 
       case other =>
         Category(
           c.id,
           Nil,
-          couldParse = true //false
+          notImplemented = true
         )
     }
   }
@@ -59,17 +60,15 @@ object CategoryParser{
         val (children, others) = rest.span(_.indent != "spacer")
 
         if (children.isEmpty) {
-          Item(description = dropRegistered(head.value), amount = head.mostCash, couldParse = true) :: parentChildSpacerParser(others)
+          Item(description = dropRegistered(head.value), amount = head.mostCash) :: parentChildSpacerParser(others)
         } else {
           val allThese = children.map(c =>
-            Item(description = s"${dropRegistered(head.value)} ${dropRegistered(c.value)}", couldParse = true, amount = c.mostCash orElse head.mostCash)
+            Item(description = s"${dropRegistered(head.value)} ${dropRegistered(c.value)}", amount = c.mostCash orElse head.mostCash)
           )
 
           allThese ::: parentChildSpacerParser(others)
         }
 
-//      case other =>
-//        List(Item(description = "didn't know what to do with " + other, couldParse = false))
     }
   }
 

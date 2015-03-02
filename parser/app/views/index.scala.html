@@ -62,8 +62,9 @@
                 @for(category <- info.parsedCategories) {
                     <h3>category: @category.id - @category.name</h3>
 
-                    @if(!category.couldParse) {
-                        <p class="text-danger">There were issues parsing this category</p>
+                    @if(category.notImplemented) {
+                        <p class="text-danger">We haven't implemented parsing for this category yet</p>
+
                     }
 
                     <ul>
