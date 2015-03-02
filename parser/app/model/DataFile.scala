@@ -38,13 +38,19 @@ class DataFile
 
 object DataFile {
 
-  private val DIR = "data"
+  private val POSSIBLE_DIRS = List("/data", "data").map(new File(_))
+
+  private val DIR = POSSIBLE_DIRS.find(_.isDirectory) getOrElse sys.error("could not find data directory")
+
+  println("using data from: " + DIR.getAbsolutePath)
 
   import scala.collection.convert.wrapAll._
   lazy val all: Seq[DataFile] =
-    for (file <- Files.newDirectoryStream(FileSystems.getDefault.getPath(DIR)).toSeq) yield {
+    (
+    for (file <- Files.newDirectoryStream(FileSystems.getDefault.getPath(DIR.getAbsolutePath)).toSeq) yield {
       new DataFile(file.toFile)
-    }
+    }).sortBy(_.niceName)
+
 
   lazy val topCapitalists = all.sortBy(d => - Try(d.rawInfo.totalCash).getOrElse(BigDecimal(0)))
 

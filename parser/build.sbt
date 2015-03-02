@@ -31,3 +31,19 @@ libraryDependencies ++= Seq(
 
   "org.scalatest" %% "scalatest" % "2.2.4" % "test"
 )
+
+
+// deployment stuff
+import NativePackagerKeys._
+import com.typesafe.sbt.packager.MappingsHelper
+
+// Don't include documentation in artifact
+doc in Compile <<= target.map(_ / "none")
+
+maintainer in Docker := "Graham Tackley <graham.tackley@theguardian.com>"
+
+dockerExposedPorts in Docker := List(9000)
+
+dockerBaseImage in Docker := "dockerfile/java:oracle-java8"
+
+dockerPackageMappings in Docker := MappingsHelper.directory("data")
